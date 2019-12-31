@@ -4,7 +4,7 @@ const Treeize = require('treeize')
 const PhotosService = {
   getAllPhotos(db) {
     return db
-      .from('road-trippin_photos AS rtp')
+      .from('road_trippin_photos AS rtp')
       .select(
         'rtp.id',
         'rtp.title',
@@ -20,12 +20,12 @@ const PhotosService = {
         ),
       )
       .leftJoin(
-        'road-trippin_comments AS comm',
+        'road_trippin_comments AS comm',
         'rtp.id',
         'comm.photo_id',
       )
       .leftJoin(
-        'road-trippin_users AS usr',
+        'road_trippin_users AS usr',
         'rtp.user_id',
         'usr.id',
       )
@@ -40,7 +40,7 @@ const PhotosService = {
 
   getCommentsForPhoto(db, photo_id) {
     return db
-      .from('road-trippin_comments AS comm')
+      .from('road_trippin_comments AS comm')
       .select(
         'comm.id',
         'comm.rating',
@@ -50,7 +50,7 @@ const PhotosService = {
       )
       .where('comm.photo_id', photo_id)
       .leftJoin(
-        'road-trippin_users AS usr',
+        'road_trippin_users AS usr',
         'comm.user_id',
         'usr.id',
       )

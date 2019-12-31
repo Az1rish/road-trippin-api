@@ -1,4 +1,4 @@
-CREATE TABLE road-trippin_users (
+CREATE TABLE road_trippin_users (
   id SERIAL PRIMARY KEY,
   user_name TEXT NOT NULL UNIQUE,
   full_name TEXT NOT NULL,
@@ -7,7 +7,7 @@ CREATE TABLE road-trippin_users (
   date_modified TIMESTAMP
 );
 
-ALTER TABLE road-trippin_photos
+ALTER TABLE road_trippin_photos
   ADD COLUMN
-    user_id INTEGER REFERENCES road-trippin_users(id)
+    user_id INTEGER REFERENCES road_trippin_users(id)
     ON DELETE SET NULL;

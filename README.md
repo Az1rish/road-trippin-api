@@ -3,11 +3,11 @@
 ## Setting Up
 
 - Install dependencies: `npm install`
-- Create development and test databases: `createdb road-trippin`, `createdb road-trippin-test`
-- Create database user: `createuser road-trippin`
+- Create development and test databases: `createdb road_trippin`, `createdb road_trippin_test`
+- Create database user: `createuser road_trippin`
 - Grant privileges to new user in `psql`:
-  - `GRANT ALL PRIVILEGES ON DATABASE road-trippin TO road-trippin`
-  - `GRANT ALL PRIVILEGES ON DATABASE "road-trippin-test" TO road-trippin`
+  - `GRANT ALL PRIVILEGES ON DATABASE road_trippin TO road_trippin`
+  - `GRANT ALL PRIVILEGES ON DATABASE "road_trippin_test" TO road_trippin`
 - Prepare environment file: `cp example.env .env`
 - Replace values in `.env` with your custom values.
 - Bootstrap development database: `npm run migrate`
@@ -32,8 +32,8 @@ timezone = 'UTC'
 
 ## Sample Data
 
-- To seed the database for development: `psql -U road-trippin -d road-trippin -a -f seeds/seed.road-trippin_tables.sql`
-- To clear seed data: `psql -U road-trippin -d road-trippin -a -f seeds/trunc.road-trippin_tables.sql`
+- To seed the database for development: `psql -U road_trippin -d road_trippin -a -f seeds/seed.road_trippin_tables.sql`
+- To clear seed data: `psql -U road_trippin -d road_trippin -a -f seeds/trunc.road_trippin_tables.sql`
 
 ## Scripts
 

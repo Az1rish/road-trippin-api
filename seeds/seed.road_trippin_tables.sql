@@ -1,12 +1,12 @@
 BEGIN;
 
 TRUNCATE
-  road-trippin_comments,
-  road-trippin_photos,
-  road-trippin_users
+  road_trippin_comments,
+  road_trippin_photos,
+  road_trippin_users
   RESTART IDENTITY CASCADE;
 
-INSERT INTO road-trippin_users (user_name, full_name, password)
+INSERT INTO road_trippin_users (user_name, full_name, password)
 VALUES
   ('dunder', 'Dunder Mifflin', '$2a$12$xGTrkesZ1ZMAJo9ofIxlp.tPwU7iO7CPVK6rqB2Jy11tQbSAxQHKm'),
   ('b.deboop', 'Bodeep Deboop', '$2a$12$q2IK1YQXruBFI6Hmqp/VsuoiA1V2dgzn.N4hZ.nrmNV5tSXCmyxlO'),
@@ -15,7 +15,7 @@ VALUES
   ('lexlor', 'Alex Taylor', '$2a$12$a/ppa7X0/4Ud0vzr7EtcpeIdXXWlE4d0LF/zg1wNT0b2ku2UfqEXu'),
   ('wippy', 'Ping Won In', '$2a$12$r6Hq5t7Rn3YLnQDP27dXUuccoOvnhldV/jxTQIPrcoaP7.OvQC84q');
 
-INSERT INTO road-trippin_photos (title, image, user_id, content)
+INSERT INTO road_trippin_photos (title, image, user_id, content)
 VALUES
   ('Hand-Painted Rubber Ducky', 'https://loremflickr.com/750/300/landscape?random=1', 1, 'This ducky has been hand-painted and is now art. Therefore it is useless and cannot be put in water.'),
   ('Cloning Machine', 'https://loremflickr.com/750/300/landscape?random=2', 2, '100% guaranteed to occasionally work every time! Requires a 167.23v power outlet or a dragonscale battery (obtained separately by solving a riddle).'),
@@ -28,7 +28,7 @@ VALUES
   ('Ruby Red Slippers', 'https://loremflickr.com/750/300/landscape?random=9', 3, 'Get home quicker than either Uber or Lyft! Three taps of the heels is all it takes. One size fits all.'),
   ( 'Magic Lamp', 'https://loremflickr.com/750/300/landscape?random=10', 4, 'May or may not produce a genie.');
 
-INSERT INTO road-trippin_comments (
+INSERT INTO road_trippin_comments (
   text,
   rating,
   photo_id,

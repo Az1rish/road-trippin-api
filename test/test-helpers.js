@@ -136,8 +136,7 @@ function makeExpectedPhoto(users, photo, comments=[]) {
   const user = users
     .find(user => user.id === photo.user_id)
 
-  const photoComments = comments
-p  .filter(comment => comment.photo_id === photo.id)
+  const photoComments = comments.filter(comment => comment.photo_id === photo.id)
 
   const number_of_comments = photoComments.length
   const average_comment_rating = calculateAverageCommentRating(photoComments)
@@ -160,7 +159,7 @@ p  .filter(comment => comment.photo_id === photo.id)
 }
 
 function calculateAverageCommentRating(comments) {
-  if(!Comments.length) return 0
+  if(!comments.length) return 0
 
   const sum = comments
     .map(comment => comment.rating)
@@ -220,9 +219,9 @@ function makePhotosFixtures() {
 function cleanTables(db) {
   return db.raw(
     `TRUNCATE
-      road-trippin_photos,
-      road-trippin_users,
-      road-trippin_comments
+      road_trippin_photos,
+      road_trippin_users,
+      road_trippin_comments
       RESTART IDENTITY CASCADE`
   )
 }
@@ -232,11 +231,11 @@ function seedUsers(db, users) {
     ...user,
     password: bcrypt.hashSync(user.password, 1)
   }))
-  return db.into('road-trippin_users').insert(preppedUsers)
+  return db.into('road_trippin_users').insert(preppedUsers)
     .then(() =>
     // update the auto sequence to stay in sync
       db.raw(
-        `SELECT setval('road-trippin_users_id_seq', ?)`,
+        `SELECT setval('road_trippin_users_id_seq', ?)`,
         [users[users.length - 1].id],
       )
     )
@@ -246,17 +245,17 @@ function seedPhotosTables(db, users, photos, comments=[]) {
   // upe a transaction to group the queries and auto rollback on any failure
   return db.transaction(async trx => {
     await seedUsers(trx, users)
-    await trx.into('road-trippin_photos').insert(photos)
+    await trx.into('road_trippin_photos').insert(photos)
     // update the auto sequence to match the forced id values
     await trx.raw(
-      `SELECT setval('road-trippin_photos_id_seq', ?)`,
+      `SELECT setval('road_trippin_photos_id_seq', ?)`,
       [photos[photos.length - 1].id],
     )
-    // only insert comments if there arepsome, also update the sequence counter
+    // only insert comments if there are some, also update the sequence counter
     if (comments.length) {
-    await trx.into('road-trippin_comments').insert(comments)
+    await trx.into('road_trippin_comments').insert(comments)
       await trx.raw(
-        `SELECT setval('road-trippin_comments_id_seq', ?)`
+        `SELECT setval('road_trippin_comments_id_seq', ?)`
         [comments[comments.length - 1].id],
       )
     }
@@ -267,7 +266,7 @@ function seedMaliciousPhoto(db, user, photo) {
   return seedUsers(db, [user])
     .then(() =>
       db
-        .into('road-trippin_photos')
+        .into('road_trippin_photos')
         .insert([photo])
     )
 }

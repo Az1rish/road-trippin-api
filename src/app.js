@@ -11,13 +11,13 @@ const usersRouter = require('./users/users-router')
 
 const app = express()
 
-const morganOption = ((NODE_ENV === 'production')
+const morganOption = (NODE_ENV === 'production')
   ? 'tiny'
-  : 'dev', {
-      skip: () => NODE_ENV === 'test',
-  })
+  : 'dev'
 
-app.use(morgan(morganOption))
+app.use(morgan(morganOption, {
+    skip: () => NODE_ENV === 'test',
+}))
 app.use(helmet())
 app.use(
     cors({
@@ -26,9 +26,9 @@ app.use(
 );
 
 app.use('/api/photos', photosRouter)
-app.use('/api/comments', commentsRouter)
-app.use('/api/auth', authRouter)
-app.use('/api/users', usersRouter)
+// app.use('/api/comments', commentsRouter)
+// app.use('/api/auth', authRouter)
+// app.use('/api/users', usersRouter)
 
 app.use(function errorHandler(error, req, res, next) {
     let response
