@@ -7,7 +7,6 @@ function makeUsersArray() {
       id: 1,
       user_name: 'test-user-1',
       full_name: 'Test user 1',
-      nickname: 'TU1',
       password: 'password',
       date_created: '2029-01-22T16:28:32.615Z',
     },
@@ -15,7 +14,6 @@ function makeUsersArray() {
       id: 2,
       user_name: 'test-user-2',
       full_name: 'Test user 2',
-      nickname: 'TU2',
       password: 'password',
       date_created: '2029-01-22T16:28:32.615Z',
     },
@@ -23,7 +21,6 @@ function makeUsersArray() {
       id: 3,
       user_name: 'test-user-3',
       full_name: 'Test user 3',
-      nickname: 'TU3',
       password: 'password',
       date_created: '2029-01-22T16:28:32.615Z',
     },
@@ -31,7 +28,6 @@ function makeUsersArray() {
       id: 4,
       user_name: 'test-user-4',
       full_name: 'Test user 4',
-      nickname: 'TU4',
       password: 'password',
       date_created: '2029-01-22T16:28:32.615Z',
     },
@@ -141,7 +137,7 @@ function makeExpectedPhoto(users, photo, comments=[]) {
     .find(user => user.id === photo.user_id)
 
   const photoComments = comments
-p  .filter(pcomment => comment.photo_id === photo.id)
+p  .filter(comment => comment.photo_id === photo.id)
 
   const number_of_comments = photoComments.length
   const average_comment_rating = calculateAverageCommentRating(photoComments)
@@ -153,12 +149,11 @@ p  .filter(pcomment => comment.photo_id === photo.id)
     content: photo.content,
     date_created: photo.date_created,
     number_of_comments,
-    averagepcomment_rating,
+    average_comment_rating,
     user: {
       id: user.id,
       user_name: user.user_name,
       full_name: user.full_name,
-      nickname: user.nickname,
       date_created: user.date_created,
     },
   }
@@ -189,7 +184,6 @@ p  .filter(comment => comment.photo_id === photoId)
         id: commentUser.id,
         user_name: commentUser.user_name,
         full_name: commentUser.full_name,
-        nickname: commentUser.nickname,
         date_created: commentUser.date_created,
       }
     }
