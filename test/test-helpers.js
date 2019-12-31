@@ -169,8 +169,7 @@ function calculateAverageCommentRating(comments) {
 }
 
 function makeExpectedPhotoComments(users, photoId, comments) {
-  const expectedComments = comments
-p  .filter(comment => comment.photo_id === photoId)
+  const expectedComments = comments.filter(comment => comment.photo_id === photoId)
 
   return expectedComments.map(comment => {
     const commentUser = users.find(user => user.id === comment.user_id)
@@ -242,7 +241,7 @@ function seedUsers(db, users) {
 }
 
 function seedPhotosTables(db, users, photos, comments=[]) {
-  // upe a transaction to group the queries and auto rollback on any failure
+  // use a transaction to group the queries and auto rollback on any failure
   return db.transaction(async trx => {
     await seedUsers(trx, users)
     await trx.into('road_trippin_photos').insert(photos)
@@ -255,7 +254,7 @@ function seedPhotosTables(db, users, photos, comments=[]) {
     if (comments.length) {
     await trx.into('road_trippin_comments').insert(comments)
       await trx.raw(
-        `SELECT setval('road_trippin_comments_id_seq', ?)`
+        `SELECT setval('road_trippin_comments_id_seq', ?)`,
         [comments[comments.length - 1].id],
       )
     }
