@@ -290,7 +290,7 @@ function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
 module.exports = {
   makeUsersArray,
   makePhotosArray,
-  makeExpectedphoto,
+  makeExpectedPhoto,
   makeExpectedPhotoComments,
   makeMaliciousPhoto,
   makeCommentsArray,
