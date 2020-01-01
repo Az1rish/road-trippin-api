@@ -26,7 +26,7 @@ app.use(
 );
 
 app.use('/api/photos', photosRouter)
-// app.use('/api/comments', commentsRouter)
+app.use('/api/comments', commentsRouter)
 // app.use('/api/auth', authRouter)
 // app.use('/api/users', usersRouter)
 
