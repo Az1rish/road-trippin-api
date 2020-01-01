@@ -1,15 +1,15 @@
 const xss = require('xss')
 
-const ReviewsService = {
+const CommentsService = {
   getById(db, id) {
     return db
-      .from('thingful_reviews AS rev')
+      .from('road_trippin_comments AS comm')
       .select(
-        'rev.id',
-        'rev.rating',
-        'rev.text',
-        'rev.date_created',
-        'rev.thing_id',
+        'comm.id',
+        'comm.rating',
+        'comm.text',
+        'comm.date_created',
+        'comm.photo_id',
         db.raw(
           `row_to_json(
             (SELECT tmp FROM (
@@ -17,7 +17,6 @@ const ReviewsService = {
                 usr.id,
                 usr.user_name,
                 usr.full_name,
-                usr.nickname,
                 usr.date_created,
                 usr.date_modified
             ) tmp)
@@ -25,35 +24,35 @@ const ReviewsService = {
         )
       )
       .leftJoin(
-        'thingful_users AS usr',
-        'rev.user_id',
+        'road_trippin_users AS usr',
+        'comm.user_id',
         'usr.id',
       )
-      .where('rev.id', id)
+      .where('comm.id', id)
       .first()
   },
 
-  insertReview(db, newReview) {
+  insertComment(db, newComment) {
     return db
-      .insert(newReview)
-      .into('thingful_reviews')
+      .insert(newComment)
+      .into('road_trippin_comments')
       .returning('*')
-      .then(([review]) => review)
-      .then(review =>
-        ReviewsService.getById(db, review.id)
+      .then(([comment]) => comment)
+      .then(comment =>
+        CommentsService.getById(db, comment.id)
       )
   },
 
-  serializeReview(review) {
+  serializeComment(comment) {
     return {
-      id: review.id,
-      rating: review.rating,
-      text: xss(review.text),
-      thing_id: review.thing_id,
-      date_created: review.date_created,
-      user: review.user || {},
+      id: comment.id,
+      rating: comment.rating,
+      text: xss(comment.text),
+      photo_id: comment.photo_id,
+      date_created: comment.date_created,
+      user: comment.user || {},
     }
   }
 }
 
-module.exports = ReviewsService
+module.exports = CommentsService
