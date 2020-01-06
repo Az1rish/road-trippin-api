@@ -14,6 +14,9 @@
     "deploy": "git push heroku master"
   },
   "keywords": [],
+  "engines": {
+    "node": "10.16.0"
+  },
   "author": "Shane McNeil <shanemcneil19@gmail.com",
   "license": "ISC",
   "dependencies": {
