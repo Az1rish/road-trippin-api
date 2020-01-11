@@ -32,7 +32,8 @@ const UploadService = multer({
     key: function (req, file, cb) {
       cb(null, Date.now().toString())
     }
-  })
+  }),
+  limits: { fileSize: 4000000 } // In Bytes: 4000000 bytes = 4 MB
 })
 
 module.exports = UploadService;
