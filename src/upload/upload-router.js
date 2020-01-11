@@ -13,9 +13,9 @@ uploadRouter
             if (err) {
                 return res.status(422).send({errors: [{title: 'File Upload Error', detail: err.message}] });
             }
-
-            try {PhotoService.insertPhoto(req.app.get('db'), req.file.location)}
-            catch(error) {console.error(error)}
+            console.log(req)
+            PhotoService.insertPhoto(req.app.get('db'), req.file.location)
+            
             return res.json({'imageUrl': req.file.location});
         });
 
