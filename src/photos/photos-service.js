@@ -2,6 +2,15 @@ const xss = require('xss')
 const Treeize = require('treeize')
 
 const PhotosService = {
+  insertPhoto(db, newPhoto) {
+    return db
+      .insert(newPhoto)
+      .into('road_trippin_photos')
+      .returning('*')
+      .then(([photo]) => photo)
+      .then(photo =>
+        PhotosService.getById(db, photo.id))
+  },
   getAllPhotos(db) {
     return db
       .from('road_trippin_photos AS rtp')

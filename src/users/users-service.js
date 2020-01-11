@@ -42,6 +42,15 @@ const UsersService = {
             date_created: new Date(user.date_created)
         }
     },
+    getAllUsers(db) {
+        return db
+            .from('road_trippin_users AS usr')
+            .select(
+                'usr.id',
+                'usr.full_name',
+                'usr.user_name'
+            )
+    }
 }
 
 module.exports = UsersService
