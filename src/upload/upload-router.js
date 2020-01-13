@@ -8,16 +8,19 @@ const singleUpload = UploadService.single('image');
 
 uploadRouter
     .post('/image', function(req, res) {
-        console.log(req)
+        console.log("Starting uploadRouter.post /image")
         singleUpload(req, res, function(err) {
-            console.log(req)
+            console.log("single upload successful" + ` req is: ${req}`)
             if (err) {
                 return res.status(422).send({errors: [{title: 'File Upload Error', detail: err.message}] });
             }
-            
-            PhotoService.insertPhoto(req.app.get('db'), req.file.location)
-            
-            return res.json({'imageUrl': req.file.location});
+            console.log("about to insert image to db")
+            const image = req.file.location
+            const { title, content } = req.body
+            const newPhoto = { title, image, content }
+            return PhotoService.insertPhoto(req.app.get('db'), newPhoto);
+            console.log("db insertion successful")
+            // return res.json({'imageUrl': req.file.location});
         });
 
     });
