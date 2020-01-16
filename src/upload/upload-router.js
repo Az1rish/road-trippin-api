@@ -2,7 +2,8 @@ const express = require("express");
 const uploadRouter = express.Router();
 const PhotoService = require('../photos/photos-service')
 const UploadService = require('./upload-service');
-const formUpload = UploadService.any();
+const formUpload = UploadService.single('image')
+
 
 
 
@@ -18,7 +19,7 @@ uploadRouter
             console.log(req.files)
             console.log(req.body)
             console.log("about to insert image to db")
-            const image = req.files[0].location
+            const image = req.file.location
             const { title, location, content } = req.body
             
             const newPhoto = { title, image, location, content }
