@@ -17,8 +17,9 @@ const PhotosService = {
       .select(
         'rtp.id',
         'rtp.title',
+        'rtp.location',
         'rtp.date_created',
-        'rtp.content',
+        'rtp.description',
         'rtp.image',
         ...userFields,
         db.raw(
@@ -81,7 +82,7 @@ const PhotosService = {
     return {
       id: photoData.id,
       title: xss(photoData.title),
-      content: xss(photoData.content),
+      description: xss(photoData.description),
       date_created: photoData.date_created,
       image: photoData.image,
       user: photoData.user || {},

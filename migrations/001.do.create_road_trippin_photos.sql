@@ -3,6 +3,6 @@ CREATE TABLE road_trippin_photos (
   image TEXT,
   title TEXT NOT NULL,
   location TEXT NOT NULL,
-  content TEXT,
+  description TEXT,
   date_created TIMESTAMP DEFAULT now() NOT NULL
 );
