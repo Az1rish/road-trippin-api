@@ -83,6 +83,7 @@ const PhotosService = {
       id: photoData.id,
       title: xss(photoData.title),
       description: xss(photoData.description),
+      location: xss(photoData.location),
       date_created: photoData.date_created,
       image: photoData.image,
       user: photoData.user || {},
