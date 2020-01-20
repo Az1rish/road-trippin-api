@@ -40,6 +40,12 @@ const PhotosService = {
         'usr.id',
       )
       .groupBy('rtp.id', 'usr.id')
+      .orderBy('rtp.date_created', 'desc')
+  },
+
+  getPhotosByUser(db, user_id) {
+    return PhotosService.getAllPhotos(db)
+      .where('usr.id', user_id)
   },
 
   getById(db, id) {

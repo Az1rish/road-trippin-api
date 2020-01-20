@@ -15,6 +15,17 @@ photosRouter
   })
 
 photosRouter
+  .route('/myPhotos')
+  .all(requireAuth)
+  .get((req, res, next) => {
+    PhotosService.getPhotosByUser(req.app.get('db'), user)
+      .then(photos => {
+        res.json(PhotosService.serializePhotos(photos))
+      })
+      .catch(next)
+  })
+
+photosRouter
   .route('/:photo_id')
   .all(requireAuth)
   .all(checkPhotoExists)
