@@ -38,10 +38,14 @@ photosRouter
       req.params.photo_id,
       req.user.id
     )
-      .then(numAffectedRows => {
-        res.status(204).json({
-          message: "Successfully deleted" }).end()
-      })
+    .then(numAffectedRows => {
+      if (numAffectedRows === 0) {
+        return res.status(403).json({
+          error: { message: `Not authorized to delete this photo` }
+        })
+      } 
+      return res.json({ message: "Successfully deleted" }).status(204).end()
+    })
       .catch(next)
   })
 
