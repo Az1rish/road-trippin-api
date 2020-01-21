@@ -32,6 +32,23 @@ photosRouter
   .get((req, res) => {
     res.json(PhotosService.serializePhoto(res.photo))
   })
+  .delete((req, res, next) => {
+    PhotosService.deletePhoto(
+      req.app.get('db'),
+      req.params.photo_id,
+      req.user.id
+    )
+      .then(() => {
+        if (req.user.id !== res.user.id) {
+          res.status(403).json({
+            message: "Not Authorized"
+          })
+        }
+        res.status(204).json({
+          message: "Successfully deleted"}).end()
+      })
+      .catch(next)
+  })
 
 photosRouter.route('/:photo_id/comments/')
   .all(requireAuth)
