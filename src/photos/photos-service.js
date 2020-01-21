@@ -49,9 +49,12 @@ const PhotosService = {
   },
 
   deletePhoto(db, photo_id, user_id) {
-    return PhotosService.getPhotosByUser(db, user_id)
-      .where('rtp.id', photo_id)
-      .delete()
+    return db('road_trippin_photos AS rtp')
+      .where({
+        'rtp.id': photo_id,
+        'rtp.user_id': user_id
+      })
+      .del()
   },
 
   getById(db, id) {

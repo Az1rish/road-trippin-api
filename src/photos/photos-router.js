@@ -38,13 +38,13 @@ photosRouter
       req.params.photo_id,
       req.user.id
     )
-      .then(() => {
-        if (req.user.id !== res.user.id) {
-          res.status(403).json({
+      .then(photo => {
+        if (!res.ok) {
+          return res.status(403).json({
             message: "Not Authorized"
           })
         }
-        res.status(204).json({
+        return res.status(204).json({
           message: "Successfully deleted"}).end()
       })
       .catch(next)
