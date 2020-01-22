@@ -1,8 +1,9 @@
 const express = require('express')
-const PhotosService = require('./photos-service')
+const { PhotosService, UploadService } = require('./photos-service')
 const { requireAuth } = require('../middleware/jwt-auth')
-
 const photosRouter = express.Router()
+const jsonBodyParser = express.json()
+const formUpload = UploadService.single('image')
 
 photosRouter
   .route('/')
@@ -13,6 +14,28 @@ photosRouter
       })
       .catch(next)
   })
+  .post(requireAuth, jsonBodyParser, function(req, res) {
+    formUpload(req, res, function(err) { 
+        if (err) {
+            return res.status(422).send({ error: err.message });
+        }
+        
+        const image = req.file.location
+        const { title, location, description } = req.body
+        const newPhoto = { title, image, location, description }
+
+        for (const [key, value] of Object.entries(newPhoto))
+            if (value == null)
+                return res.status(400).json({
+                    error: `Missing '${key}' in request body`
+                })
+
+        newPhoto.user_id = req.user.id
+        
+        return PhotosService.insertPhoto(req.app.get('db'), newPhoto)
+            .then(res.status(201).location(`/photos/${newPhoto.id}`).json({ newPhoto }))
+    });
+});
 
 photosRouter
   .route('/myPhotos')

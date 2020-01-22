@@ -42,7 +42,8 @@ function makePhotosArray(users) {
       image: 'http://placehold.it/500x500',
       user_id: users[0].id,
       date_created: '2029-01-22T16:28:32.615Z',
-      content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus consequuntur deserunt commodi, nobis qui inventore corrupti iusto aliquid debitis unde non.Adipisci, pariatur.Molestiae, libero esse hic adipisci autem neque ?',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus consequuntur deserunt commodi, nobis qui inventore corrupti iusto aliquid debitis unde non.Adipisci, pariatur.Molestiae, libero esse hic adipisci autem neque ?',
+      location: 'Jupiter',
     },
     {
       id: 2,
@@ -50,7 +51,8 @@ function makePhotosArray(users) {
       image: 'http://placehold.it/500x500',
       user_id: users[1].id,
       date_created: '2029-01-22T16:28:32.615Z',
-      content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus consequuntur deserunt commodi, nobis qui inventore corrupti iusto aliquid debitis unde non.Adipisci, pariatur.Molestiae, libero esse hic adipisci autem neque ?',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus consequuntur deserunt commodi, nobis qui inventore corrupti iusto aliquid debitis unde non.Adipisci, pariatur.Molestiae, libero esse hic adipisci autem neque ?',
+      location: 'Jupiter',
     },
     {
       id: 3,
@@ -58,7 +60,8 @@ function makePhotosArray(users) {
       image: 'http://placehold.it/500x500',
       user_id: users[2].id,
       date_created: '2029-01-22T16:28:32.615Z',
-      content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus consequuntur deserunt commodi, nobis qui inventore corrupti iusto aliquid debitis unde non.Adipisci, pariatur.Molestiae, libero esse hic adipisci autem neque ?',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus consequuntur deserunt commodi, nobis qui inventore corrupti iusto aliquid debitis unde non.Adipisci, pariatur.Molestiae, libero esse hic adipisci autem neque ?',
+      location: 'Jupiter',
     },
     {
       id: 4,
@@ -66,7 +69,8 @@ function makePhotosArray(users) {
       image: 'http://placehold.it/500x500',
       user_id: users[3].id,
       date_created: '2029-01-22T16:28:32.615Z',
-      content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus consequuntur deserunt commodi, nobis qui inventore corrupti iusto aliquid debitis unde non.Adipisci, pariatur.Molestiae, libero esse hic adipisci autem neque ?',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus consequuntur deserunt commodi, nobis qui inventore corrupti iusto aliquid debitis unde non.Adipisci, pariatur.Molestiae, libero esse hic adipisci autem neque ?',
+      location: 'Jupiter',
     },
   ]
 }
@@ -145,7 +149,8 @@ function makeExpectedPhoto(users, photo, comments=[]) {
     id: photo.id,
     image: photo.image,
     title: photo.title,
-    content: photo.content,
+    description: photo.description,
+    location: photo.location,
     date_created: photo.date_created,
     number_of_comments,
     average_comment_rating,
@@ -195,12 +200,14 @@ function makeMaliciousPhoto(user) {
     date_created: new Date().toISOString(),
     title: 'Naughty naughty very naughty <script>alert("xss");</script>',
     user_id: user.id,
-    content: `Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.`,
+    description: `Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.`,
+    location: 'Jupiter<script>alert("xss");</script>',
   }
   const expectedPhoto = {
     ...makeExpectedPhoto([user], maliciousPhoto),
     title: 'Naughty naughty very naughty &lt;script&gt;alert(\"xss\");&lt;/script&gt;',
-    content: `Bad image <img src="https://url.to.file.which/does-not.exist">. But not <strong>all</strong> bad.`,
+    description: `Bad image <img src="https://url.to.file.which/does-not.exist">. But not <strong>all</strong> bad.`,
+    location: 'Jupiter&lt;script&gt;alert(\"xss\");&lt;/script&gt;'
   }
   return {
     maliciousPhoto,

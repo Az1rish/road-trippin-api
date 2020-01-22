@@ -2,7 +2,7 @@ const knex = require('knex')
 const app = require('../src/app')
 const helpers = require('./test-helpers')
 
-describe('Photos Endpoints', function() {
+describe.only('Photos Endpoints', function() {
   let db
 
   const {
@@ -74,13 +74,13 @@ describe('Photos Endpoints', function() {
         )
       })
 
-      it('removes XSS attack content', () => {
+      it('removes XSS attack description', () => {
         return supertest(app)
           .get(`/api/photos`)
           .expect(200)
           .expect(res => {
             expect(res.body[0].title).to.eql(expectedPhoto.title)
-            expect(res.body[0].content).to.eql(expectedPhoto.content)
+            expect(res.body[0].description).to.eql(expectedPhoto.description)
           })
       })
     })
@@ -140,14 +140,14 @@ describe('Photos Endpoints', function() {
         )
       })
 
-      it('removes XSS attack content', () => {
+      it('removes XSS attack description', () => {
         return supertest(app)
           .get(`/api/photos/${maliciousPhoto.id}`)
           .set('Authorization', helpers.makeAuthHeader(testUser))
           .expect(200)
           .expect(res => {
             expect(res.body.title).to.eql(expectedPhoto.title)
-            expect(res.body.content).to.eql(expectedPhoto.content)
+            expect(res.body.description).to.eql(expectedPhoto.description)
           })
       })
     })
@@ -188,6 +188,37 @@ describe('Photos Endpoints', function() {
           .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
           .expect(200, expectedComments)
       })
+    })
+  })
+
+  describe(`POST /photos`, () => {
+    it(`creates a photo, responding with 201 and the new photo`, function() {
+      const testUser = helpers.makeUsersArray()[1]
+      const newPhoto = {
+        title: 'Test title',
+        location: 'Mars',
+        description: 'Test photo description...'
+      }
+      return supertest(app)
+        .post('/api/photos')
+        .set('Authorization', helpers.makeAuthHeader(testUser))
+        .send(newPhoto)
+        .expect(201)
+        .expect(res => {
+          expect(res.body.title).to.eql(newArticle.title)
+          expect(res.body.style).to.eql(newArticle.style)
+          expect(res.body.description).to.eql(newArticle.description)
+          expect(res.body).to.have.property('id')
+          expect(res.headers.location).to.eql(`/photos/${res.body.id}`)
+          const expected = new Date()
+          const actual = new Date(res.body.date_created)
+          expect(actual).to.eql(expected)
+        })
+        .then(postRes =>
+          supertest(app)    
+            .get(`/photos/${postRes.body.id}`)
+            .expect(postRes.body)
+        )
     })
   })
 })
