@@ -33,9 +33,14 @@ photosRouter
         newPhoto.user_id = req.user.id
         
         return PhotosService.insertPhoto(req.app.get('db'), newPhoto)
-            .then(res.status(201).location(`/photos/${newPhoto.id}`).json({ newPhoto }))
-    });
-});
+            .then(photo => {
+              res
+                .status(201)
+                .location(req.originalUrl + `/${photo.id}`)
+                .json({ photo })
+            });
+    });        
+  })
 
 photosRouter
   .route('/myPhotos')
@@ -106,4 +111,4 @@ async function checkPhotoExists(req, res, next) {
   }
 }
 
-module.exports = photosRouter
+module.exports = photosRouter 
