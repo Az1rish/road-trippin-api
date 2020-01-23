@@ -191,7 +191,7 @@ describe.only('Photos Endpoints', function() {
     })
   })
 
-  describe.skip(`POST /photos`, () => {
+  describe(`POST /photos`, () => {
     it(`creates a photo, responding with 201 and the new photo`, function() {
       this.retries(3)
       const testUser = (helpers.makeUsersArray())[0]
@@ -223,7 +223,7 @@ describe.only('Photos Endpoints', function() {
     })
   })
 
-  describe.only(`DELETE /photos/:photo_id`, () => {
+  describe(`DELETE /photos/:photo_id`, () => {
     context(`Given there are photos in the database`, () => {
       beforeEach('insert photos', () =>
         helpers.seedPhotosTables(
@@ -238,12 +238,12 @@ describe.only('Photos Endpoints', function() {
         const idToRemove = 2
         const expectedPhotos = testPhotos.filter(photo => photo.id !== idToRemove)
         return supertest(app)
-          .delete(`/photos/${idToRemove}`)
+          .delete(`/api/photos/${idToRemove}`)
           .set('Authorization', helpers.makeAuthHeader(testUsers[1]))
-          .expect(204)
+          .expect(200)
           .then(res =>
             supertest(app)
-              .get('/photos')
+              .get('/api/photos')
               .expect(expectedPhotos)
           )
       })

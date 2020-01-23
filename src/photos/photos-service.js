@@ -61,6 +61,15 @@ const PhotosService = {
       .del()
   },
 
+  updatePhoto(db, photo_id, user_id, newPhotoFields) {
+    return db('road_trippin_photos AS rtp')
+        .where({ 
+          'rtp.id': photo_id,
+          'rtp.user_id': user_id 
+        })
+        .update(newPhotoFields)
+},
+
   getById(db, id) {
     return PhotosService.getAllPhotos(db)
       .where('rtp.id', id)

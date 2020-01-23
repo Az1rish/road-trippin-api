@@ -1,6 +1,7 @@
 const express = require('express')
 const { PhotosService, UploadService } = require('./photos-service')
 const { requireAuth } = require('../middleware/jwt-auth')
+const path = require('path')
 const photosRouter = express.Router()
 const jsonBodyParser = express.json()
 const formUpload = UploadService.single('image')
@@ -36,7 +37,7 @@ photosRouter
             .then(photo => {
               res
                 .status(201)
-                .location(req.originalUrl + `/${photo.id}`)
+                .location(path.posix.join(req.originalUrl, `/${photo.id}`))
                 .json({ photo })
             });
     });        
@@ -72,10 +73,35 @@ photosRouter
           error: { message: `Not authorized to delete this photo` }
         })
       } 
-      return res.json({ message: "Successfully deleted" }).status(204).end()
+      return res.status(200)
+        .json({ message: "Successfully deleted" })
     })
       .catch(next)
   })
+  .patch(jsonBodyParser, (req, res, next) => {
+    const { image, title, location, description } = req.body
+    const photoToUpdate = { image, title, location, description }
+
+    const numberOfValues = Object.values(photoToUpdate).filter(Boolean).length
+    if (numberOfValues === 0) {
+        return res.status(400).json({
+            error: {
+                message: `Request body must contain either 'image', 'title', 'description', or 'location'`
+            }
+        })
+    }
+
+    PhotosService.updatePhoto(
+        req.app.get('db'), 
+        req.params.photo_id,
+        req.user.id, 
+        photoToUpdate
+    )
+        .then(numRowsAffected => {
+            res.json({ message: "Successfully updated" }).status(204).end()
+        })
+        .catch(next)
+})
 
 photosRouter.route('/:photo_id/comments/')
   .all(requireAuth)
