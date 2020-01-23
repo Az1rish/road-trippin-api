@@ -234,7 +234,7 @@ describe.only('Photos Endpoints', function() {
         )
       )
 
-      it('responds with 204 and removes the photo', () => {
+      it('responds with 200 and removes the photo', () => {
         const idToRemove = 2
         const expectedPhotos = testPhotos.filter(photo => photo.id !== idToRemove)
         return supertest(app)

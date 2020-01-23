@@ -154,12 +154,8 @@ function makeExpectedPhoto(users, photo, comments=[]) {
     date_created: photo.date_created,
     number_of_comments,
     average_comment_rating,
-    user: {
-      id: user.id,
-      user_name: user.user_name,
-      full_name: user.full_name,
-      date_created: user.date_created,
-    },
+    user_id: user.id,
+
   }
 }
 
