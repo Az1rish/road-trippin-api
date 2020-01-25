@@ -2,7 +2,7 @@ const knex = require('knex')
 const app = require('../src/app')
 const helpers = require('./test-helpers')
 
-describe.only('Photos Endpoints', function() {
+describe.skip('Photos Endpoints', function() {
   let db
 
   const {
@@ -206,9 +206,9 @@ describe.only('Photos Endpoints', function() {
         .send(newPhoto)
         .expect(201)
         .expect(res => {
-          expect(res.body.title).to.eql(newArticle.title)
-          expect(res.body.style).to.eql(newArticle.style)
-          expect(res.body.description).to.eql(newArticle.description)
+          expect(res.body.title).to.eql(newPhoto.title)
+          expect(res.body.style).to.eql(newPhoto.style)
+          expect(res.body.description).to.eql(newPhoto.description)
           expect(res.body).to.have.property('id')
           expect(res.headers.location).to.eql(`/photos/${res.body.id}`)
           const expected = new Date().toLocaleString('en', { timeZone: 'UTC' })
@@ -224,19 +224,29 @@ describe.only('Photos Endpoints', function() {
   })
 
   describe(`DELETE /photos/:photo_id`, () => {
+    context(`Given no photos`, () => {
+      it(`responds with 404`, () => {
+        const photoId = 123456
+        return supertest(app)
+          .delete(`/photos/${photoId}`)
+          .expect(404, { error: { message: `Photo doesn't exist` } })
+      })
+    })
+
     context(`Given there are photos in the database`, () => {
-      beforeEach('insert photos', () =>
-        helpers.seedPhotosTables(
-          db,
-          testUsers,
-          testPhotos,
-          testComments,
-        )
-      )
+      const testUsers = helpers.makeUsersArray()
+      const testPhotos = helpers.makePhotosArray(testUsers)
+
+      beforeEach('insert photos', () => {
+        return db
+          .into(`road_trippin_photos`)
+          .insert(testPhotos)
+      })
 
       it('responds with 200 and removes the photo', () => {
         const idToRemove = 2
         const expectedPhotos = testPhotos.filter(photo => photo.id !== idToRemove)
+        
         return supertest(app)
           .delete(`/api/photos/${idToRemove}`)
           .set('Authorization', helpers.makeAuthHeader(testUsers[1]))
@@ -247,6 +257,95 @@ describe.only('Photos Endpoints', function() {
               .expect(expectedPhotos)
           )
       })
+    })
+  })
+
+  describe.only(`PATCH /api/photos/:photo_id`, () => {
+    context(`Given no photos`, () => {
+      it(`responds with 404`, () => {
+        const testUsers = helpers.makeUsersArray()
+        const photoId = 123456
+
+        beforeEach('insert users', () => {
+          return db
+            .into(`road_trippin_users`)
+            .insert(testUsers)
+        })
+
+        return supertest(app)
+          .patch(`/api/photos/${photoId}`)
+          .set('Authorization', helpers.makeAuthHeader(testUsers[1]))
+          .expect(404, { error: { message: `Photo doesn't exist` } })
+      })
+    })
+
+    context('Given there are photos in the database', () => {
+      const testPhotos = makePhotosArray()
+    
+      beforeEach('insert photos', () => {
+        return db
+          .into('road_trippin_photos')
+          .insert(testPhotos)
+      })
+      
+      it('responds with 204 and updates the photo', () => {
+        const idToUpdate = 2
+        const updatePhoto = {
+          title: 'updated photo title',
+          style: 'Interview',
+          content: 'updated photo content',
+        }
+        const expectedPhoto = {
+          ...testPhotos[idToUpdate - 1],
+          ...updateArticle
+        }
+        return supertest(app)
+          .patch(`/api/photos/${idToUpdate}`)
+          .send(updatePhoto)
+          .expect(204)
+          .then(res =>
+            supertest(app)
+              .get(`/api/photos/${idToUpdate}`)
+              .expect(expectedPhoto)
+          )
+      })
+
+      it(`responds with 400 when no required fields supplied`, () => {
+        const idToUpdate = 2
+        return supertest(app)
+          .patch(`/api/articles/${idToUpdate}`)
+          .send({ irrelevantField: 'foo' })
+          .expect(400, {
+            error: {
+              message: `Request body must contain either 'title', 'style' or 'content'`
+            }
+          })
+      })
+
+      it(`responds with 204 when updating only a subset of fields`, () => {
+        const idToUpdate = 2
+        const updateArticle = {
+          title: 'updated article title',
+        }
+        const expectedArticle = {
+          ...testArticles[idToUpdate - 1],
+          ...updateArticle
+        }
+        
+        return supertest(app)
+          .patch(`/api/articles/${idToUpdate}`)
+          .send({
+            ...updateArticle,
+            fieldToIgnore: 'should not be in GET response'
+          })
+          .expect(204)
+          .then(res =>
+            supertest(app)
+              .get(`/api/articles/${idToUpdate}`)
+              .expect(expectedArticle)
+          )
+      })
+          
     })
   })
 })

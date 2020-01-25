@@ -17,29 +17,29 @@ photosRouter
   })
   .post(requireAuth, jsonBodyParser, function(req, res) {
     formUpload(req, res, function(err) { 
-        if (err) {
-            return res.status(422).send({ error: err.message });
-        }
-        
-        const image = req.file.location
-        const { title, location, description } = req.body
-        const newPhoto = { title, image, location, description }
+      if (err) {
+        return res.status(422).send({ error: err.message });
+      }
+      
+      const image = req.file.location
+      const { title, location, description } = req.body
+      const newPhoto = { title, image, location, description }
 
-        for (const [key, value] of Object.entries(newPhoto))
-            if (value == null)
-                return res.status(400).json({
-                    error: `Missing '${key}' in request body`
-                })
+      for (const [key, value] of Object.entries(newPhoto))
+        if (value == null)
+          return res.status(400).json({
+            error: `Missing '${key}' in request body`
+          })
 
-        newPhoto.user_id = req.user.id
-        
-        return PhotosService.insertPhoto(req.app.get('db'), newPhoto)
-            .then(photo => {
-              res
-                .status(201)
-                .location(path.posix.join(req.originalUrl, `/${photo.id}`))
-                .json({ photo })
-            });
+      newPhoto.user_id = req.user.id
+      
+      return PhotosService.insertPhoto(req.app.get('db'), newPhoto)
+        .then(photo => {
+          res
+            .status(201)
+            .location(path.posix.join(req.originalUrl, `/${photo.id}`))
+            .json({ photo })
+        });
     });        
   })
 
@@ -79,16 +79,18 @@ photosRouter
       .catch(next)
   })
   .patch(jsonBodyParser, (req, res, next) => {
-    const { image, title, location, description } = req.body
-    const photoToUpdate = { image, title, location, description }
+    const { title, location, description } = req.body
+    console.log(req.body)
+    const photoToUpdate = { title, location, description }
+    console.log(photoToUpdate)
 
     const numberOfValues = Object.values(photoToUpdate).filter(Boolean).length
     if (numberOfValues === 0) {
-        return res.status(400).json({
-            error: {
-                message: `Request body must contain either 'image', 'title', 'description', or 'location'`
-            }
-        })
+      return res.status(400).json({
+        error: {
+          message: `Request body must contain either 'title', 'description', or 'location'`
+        }
+      })
     }
 
     PhotosService.updatePhoto(
@@ -98,7 +100,7 @@ photosRouter
         photoToUpdate
     )
         .then(numRowsAffected => {
-            res.json({ message: "Successfully updated" }).status(204).end()
+            res.json({ message: "Successfully updated" }).status(200)
         })
         .catch(next)
 })
