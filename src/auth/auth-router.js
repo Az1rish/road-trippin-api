@@ -41,6 +41,10 @@ authRouter
                         })
                     })
             })
+            .then(user => {
+                res.json(user)
+              })
+            .then(res => {console.log(res)})
             .catch(next)
     })
 

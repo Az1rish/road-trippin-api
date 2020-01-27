@@ -52,6 +52,11 @@ const PhotosService = {
       .where('usr.id', user_id)
   },
 
+  getPhotosByLocation(db, location) {
+    return PhotosService.getAllPhotos(db)
+      .where('rtp.location', location)
+  },
+
   deletePhoto(db, photo_id, user_id) {
     return db('road_trippin_photos AS rtp')
       .where({
