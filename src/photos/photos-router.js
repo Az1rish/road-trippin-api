@@ -91,10 +91,7 @@ photosRouter
   })
   .patch(jsonBodyParser, (req, res, next) => {
     const { title, location, description } = req.body
-    // console.log(`User = ${req.user}`)
     const photoToUpdate = { title, location, description }
-    // console.log(photoToUpdate)
-    // console.log(`response = ${res.photo}`)
     const numberOfValues = Object.values(photoToUpdate).filter(Boolean).length
     if (numberOfValues === 0) {
       return res.status(400).json({

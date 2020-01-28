@@ -2,7 +2,7 @@ const knex = require('knex')
 const app = require('../src/app')
 const helpers = require('./test-helpers')
 
-describe.skip('Photos Endpoints', function() {
+describe('Photos Endpoints', function() {
   let db
 
   const {
@@ -191,7 +191,7 @@ describe.skip('Photos Endpoints', function() {
     })
   })
 
-  describe(`POST /photos`, () => {
+  describe.skip(`POST /photos`, () => {
     it(`creates a photo, responding with 201 and the new photo`, function() {
       this.retries(3)
       const testUser = (helpers.makeUsersArray())[0]
@@ -223,7 +223,7 @@ describe.skip('Photos Endpoints', function() {
     })
   })
 
-  describe(`DELETE /photos/:photo_id`, () => {
+  describe.skip(`DELETE /photos/:photo_id`, () => {
     context(`Given no photos`, () => {
       it(`responds with 404`, () => {
         const photoId = 123456
@@ -260,7 +260,7 @@ describe.skip('Photos Endpoints', function() {
     })
   })
 
-  describe.only(`PATCH /api/photos/:photo_id`, () => {
+  describe.skip(`PATCH /api/photos/:photo_id`, () => {
     context(`Given no photos`, () => {
       it(`responds with 404`, () => {
         const testUsers = helpers.makeUsersArray()
