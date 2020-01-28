@@ -58,7 +58,7 @@ photosRouter
   .route('/location')
   .all(requireAuth)
   .get((req, res, next) => {
-    PhotosService.getPhotosByLocation(req.app.get('db'), req.params.query)
+    PhotosService.getPhotosByLocation(req.app.get('db'), req.query["location"])
       .then(photos => {
         res.json(PhotosService.serializePhotos(photos))
       })
