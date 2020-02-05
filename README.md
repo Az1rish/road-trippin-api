@@ -1,41 +1,63 @@
-# Road Trippin' API
+# Road Trippin'
 
-## Setting Up
+[road-trippin.now.sh](https://road-trippin.now.sh)
 
-- Install dependencies: `npm install`
-- Create development and test databases: `createdb road_trippin`, `createdb road_trippin_test`
-- Create database user: `createuser road_trippin`
-- Grant privileges to new user in `psql`:
-  - `GRANT ALL PRIVILEGES ON DATABASE road_trippin TO road_trippin`
-  - `GRANT ALL PRIVILEGES ON DATABASE "road_trippin_test" TO road_trippin`
-- Prepare environment file: `cp example.env .env`
-- Replace values in `.env` with your custom values.
-- Bootstrap development database: `npm run migrate`
-- Bootstrap test database: `npm run migrate:test`
+![Road Trippin' Landing Page](./src/road-trippin-screenshot.png)
 
-### Configuring Postgres
+## API Documentation
 
-For tests involving time to run properly, your Postgres database must be configured to run in the UTC timezone.
+### /photos Endpoint
 
-1. Locate the `postgresql.conf` file for your Postgres installation.
-    - OS X, Homebrew: `/usr/local/var/postgres/postgresql.conf`
-2. Uncomment the `timezone` line and set it to `UTC` as follows:
+#### / Route
 
-```
-# - Locale and Formatting -
+GET - Get all photos
 
-datestyle = 'iso, mdy'
-#intervalstyle = 'postgres'
-timezone = 'UTC'
-#timezone_abbreviations = 'Default'     # Select the set of available time zone
-```
+POST - Post new photo (Auth Token Required)
 
-## Sample Data
+#### /myPhotos Route
 
-- To seed the database for development: `psql -U road_trippin -d road_trippin -a -f seeds/seed.road_trippin_tables.sql`
-- To clear seed data: `psql -U road_trippin -d road_trippin -a -f seeds/trunc.road_trippin_tables.sql`
+GET - Get photos posted by user (Auth Token Required)
 
-## Scripts
+#### /location Route
 
-- Start application for development: `npm run dev`
-- Run tests: `npm test`
+GET - Get photos by location search (Auth Token Required) - Must add query string, ex. /location?location={query}
+
+#### /:photo_id Route
+
+GET - Get single photo by ID (Auth Token Required)
+
+DELETE - Delete individual photo (Auth Token Required) - Only can be done by user that posted photo
+
+PATCH - Edit photo (Auth Token Required) - Only can be done by user that posted photo - Only can edit text fields (title, description, location)
+
+#### /:photo_id/comments
+
+GET - Get comments for individual photo (Auth Token Required)
+
+### /comments Endpoint
+
+POST - Post comment for current photo (Auth Token Required) - photo_id required in request body
+
+### /auth Endpoint
+
+#### /login Route
+
+POST - Validates user and logs them in
+
+### /users Endpoint
+
+GET - Get list of all users (used for development, not available from front end)
+
+POST - Adds newly registered user to database
+
+## Summary
+
+This app allows the user to register an account and securely log in.  Once inside the user can browse images uploaded by other users, comment on and rate the photos, search by location, upload photos or delete photos they've uploaded and edit text describing the photos they have uploaded.
+
+## Technologies
+
+The technologies I've used here on the back end are NodeJS, Express, CORS, bcrypt, aws-sdk, multer, multer-s3, dotenv, helmet, jsonwebtoken, knex, morgan, treeize, xss, PostgreSQL.
+
+I also used mocha, chai, nodemon, postgrator-cli and supertest during development.
+
+Photo storage is done by uploading photos to an AWS S3 bucket and then saving the url in my PostgreSQL database for convenient retrieval.
