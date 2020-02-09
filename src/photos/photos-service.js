@@ -1,5 +1,7 @@
-const xss = require('xss')
-const Treeize = require('treeize')
+/* eslint-disable camelcase */
+/* eslint-disable no-use-before-define */
+const xss = require('xss');
+const Treeize = require('treeize');
 const aws = require('aws-sdk');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
@@ -12,8 +14,7 @@ const PhotosService = {
       .into('road_trippin_photos')
       .returning('*')
       .then(([photo]) => photo)
-      .then(photo =>
-        PhotosService.getById(db, photo.id))
+      .then((photo) => PhotosService.getById(db, photo.id));
   },
   getAllPhotos(db) {
     return db
@@ -27,34 +28,34 @@ const PhotosService = {
         'rtp.image',
         ...userFields,
         db.raw(
-          `count(DISTINCT comm) AS number_of_comments`
+          'count(DISTINCT comm) AS number_of_comments'
         ),
         db.raw(
-          `AVG(comm.rating) AS average_comment_rating`
-        ),
+          'AVG(comm.rating) AS average_comment_rating'
+        )
       )
       .leftJoin(
         'road_trippin_comments AS comm',
         'rtp.id',
-        'comm.photo_id',
+        'comm.photo_id'
       )
       .leftJoin(
         'road_trippin_users AS usr',
         'rtp.user_id',
-        'usr.id',
+        'usr.id'
       )
       .groupBy('rtp.id', 'usr.id')
-      .orderBy('rtp.date_created', 'desc')
+      .orderBy('rtp.date_created', 'desc');
   },
 
   getPhotosByUser(db, user_id) {
     return PhotosService.getAllPhotos(db)
-      .where('usr.id', user_id)
+      .where('usr.id', user_id);
   },
 
   getPhotosByLocation(db, location) {
     return PhotosService.getAllPhotos(db)
-      .where('rtp.location', location)
+      .where('rtp.location', location);
   },
 
   deletePhoto(db, photo_id, user_id) {
@@ -63,22 +64,22 @@ const PhotosService = {
         'rtp.id': photo_id,
         'rtp.user_id': user_id
       })
-      .del()
+      .del();
   },
 
   updatePhoto(db, photo_id, user_id, newPhotoFields) {
     return db('road_trippin_photos AS rtp')
-        .where({ 
-          'rtp.id': photo_id,
-          'rtp.user_id': user_id 
-        })
-        .update(newPhotoFields)
-},
+      .where({
+        'rtp.id': photo_id,
+        'rtp.user_id': user_id
+      })
+      .update(newPhotoFields);
+  },
 
   getById(db, id) {
     return PhotosService.getAllPhotos(db)
       .where('rtp.id', id)
-      .first()
+      .first();
   },
 
   getCommentsForPhoto(db, photo_id) {
@@ -89,28 +90,28 @@ const PhotosService = {
         'comm.rating',
         'comm.text',
         'comm.date_created',
-        ...userFields,
+        ...userFields
       )
       .where('comm.photo_id', photo_id)
       .leftJoin(
         'road_trippin_users AS usr',
         'comm.user_id',
-        'usr.id',
+        'usr.id'
       )
-      .groupBy('comm.id', 'usr.id')
+      .groupBy('comm.id', 'usr.id');
   },
 
   serializePhotos(photos) {
-    return photos.map(this.serializePhoto)
+    return photos.map(this.serializePhoto);
   },
 
   serializePhoto(photo) {
-    const photoTree = new Treeize()
+    const photoTree = new Treeize();
 
     // Some light hackiness to allow for the fact that `treeize`
     // only accepts arrays of objects, and we want to use a single
     // object.
-    const photoData = photoTree.grow([ photo ]).getData()[0]
+    const photoData = photoTree.grow([photo]).getData()[0];
 
     return {
       id: photoData.id,
@@ -121,21 +122,21 @@ const PhotosService = {
       image: photoData.image,
       user: photoData.user || {},
       number_of_comments: Number(photoData.number_of_comments) || 0,
-      average_comment_rating: Math.round(photoData.average_comment_rating) || 0,
-    }
+      average_comment_rating: Math.round(photoData.average_comment_rating) || 0
+    };
   },
 
   serializePhotoComments(comments) {
-    return comments.map(this.serializePhotoComment)
+    return comments.map(this.serializePhotoComment);
   },
 
   serializePhotoComment(comment) {
-    const commentTree = new Treeize()
+    const commentTree = new Treeize();
 
     // Some light hackiness to allow for the fact that `treeize`
     // only accepts arrays of objects, and we want to use a single
     // object.
-    const commentData = commentTree.grow([ comment ]).getData()[0]
+    const commentData = commentTree.grow([comment]).getData()[0];
 
     return {
       id: commentData.id,
@@ -143,18 +144,18 @@ const PhotosService = {
       photo_id: commentData.photo_id,
       text: xss(commentData.text),
       user: commentData.user || {},
-      date_created: commentData.date_created,
-    }
-  },
-}
+      date_created: commentData.date_created
+    };
+  }
+};
 
 const userFields = [
   'usr.id AS user:id',
   'usr.user_name AS user:user_name',
   'usr.full_name AS user:full_name',
   'usr.date_created AS user:date_created',
-  'usr.date_modified AS user:date_modified',
-]
+  'usr.date_modified AS user:date_modified'
+];
 
 aws.config.update({
   secretAccessKey: config.AWS_SECRET_ACCESS,
@@ -166,11 +167,11 @@ const s3 = new aws.S3();
 
 const fileFilter = (req, file, cb) => {
   if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
-      cb(null, true)
+    cb(null, true);
   } else {
-      cb(new Error('Invalid Mime Type, only JPEG and PNG'), false);
+    cb(new Error('Invalid Mime Type, only JPEG and PNG'), false);
   }
-}
+};
 
 const UploadService = multer({
   fileFilter,
@@ -178,17 +179,17 @@ const UploadService = multer({
     s3,
     bucket: 'road-trippin-images',
     acl: 'public-read',
-    metadata: function (req, file, cb) {
-      cb(null, {fieldName: 'TESTING_META_DATA!'});
+    metadata(req, file, cb) {
+      cb(null, { fieldName: 'TESTING_META_DATA!' });
     },
-    key: function (req, file, cb) {
-      cb(null, Date.now().toString())
+    key(req, file, cb) {
+      cb(null, Date.now().toString());
     }
   }),
-  limits: { fileSize: 4000000 }, // In Bytes: 4000000 bytes = 4 MB
-})
+  limits: { fileSize: 4000000 } // In Bytes: 4000000 bytes = 4 MB
+});
 
 module.exports = {
   PhotosService,
   UploadService
-}
+};

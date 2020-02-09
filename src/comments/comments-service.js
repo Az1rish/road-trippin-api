@@ -1,4 +1,4 @@
-const xss = require('xss')
+const xss = require('xss');
 
 const CommentsService = {
   getById(db, id) {
@@ -26,10 +26,10 @@ const CommentsService = {
       .leftJoin(
         'road_trippin_users AS usr',
         'comm.user_id',
-        'usr.id',
+        'usr.id'
       )
       .where('comm.id', id)
-      .first()
+      .first();
   },
 
   insertComment(db, newComment) {
@@ -38,9 +38,7 @@ const CommentsService = {
       .into('road_trippin_comments')
       .returning('*')
       .then(([comment]) => comment)
-      .then(comment =>
-        CommentsService.getById(db, comment.id)
-      )
+      .then((comment) => CommentsService.getById(db, comment.id));
   },
 
   serializeComment(comment) {
@@ -50,9 +48,9 @@ const CommentsService = {
       text: xss(comment.text),
       photo_id: comment.photo_id,
       date_created: comment.date_created,
-      user: comment.user || {},
-    }
+      user: comment.user || {}
+    };
   }
-}
+};
 
-module.exports = CommentsService
+module.exports = CommentsService;

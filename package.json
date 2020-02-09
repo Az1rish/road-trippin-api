@@ -1,7 +1,7 @@
 {
   "name": "road-trippin-api",
   "version": "1.0.0",
-  "description": "Helping everyone see the world",
+  "description": "Share the world",
   "private": true,
   "main": "src/server.js",
   "scripts": {
@@ -9,12 +9,13 @@
     "dev": "nodemon src/server.js",
     "migrate": "postgrator --config postgrator-config.js",
     "migrate:test": "env NODE_ENV=test npm run migrate",
-    "migrate:production": "env SSL=true DATABASE_URL=$(heroku config:get DATABASE_URL) npm run migrate",   
+    "migrate:production": "env SSL=true DATABASE_URL=$(heroku config:get DATABASE_URL) npm run migrate",
     "start": "node src/server.js",
-    "predeploy": "npm audit && npm run migrate:production", 
+    "predeploy": "npm audit && npm run migrate:production",
     "deploy": "git push heroku master"
   },
   "keywords": [],
+  "type": "commonjs",
   "engines": {
     "node": "10.16.0"
   },
@@ -38,6 +39,10 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
+    "eslint": "^6.1.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^11.0.0",
     "mocha": "^6.2.2",
     "nodemon": "^1.19.4",
     "postgrator-cli": "^3.2.0",
